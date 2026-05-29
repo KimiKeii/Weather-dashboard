@@ -1,8 +1,8 @@
-export default function LocationCard({ city, isActive, onClick }) {
+export default function LocationCard({ city, isActive, onClick, onRemove }) {
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150
+      className={`group flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150
         ${isActive ? "bg-blue-50" : "hover:bg-gray-100"}`}
     >
       <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-lg
@@ -20,8 +20,18 @@ export default function LocationCard({ city, isActive, onClick }) {
       <span className={`text-sm font-medium ${isActive ? "text-blue-600" : "text-gray-500"}`}>
         {city.temp}°
       </span>
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onRemove();
+        }}
+        className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
+        aria-label={`Remove ${city.name}`}
+      >
+        ✕
+      </button>
     </div>
   );
 }
-
-//hi
