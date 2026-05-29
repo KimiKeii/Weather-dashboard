@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import LocationCard from "./LocationCard";
-import { getWeather, getWeatherEmoji } from "../../api/weather";
+import { getWeather, getWeatherEmoji } from "../../API/weather";
 
 const DEFAULT_CITIES = [
   { id: 1, name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 },
@@ -48,51 +48,35 @@ export default function Sidebar({ onCitySelect }) {
   }
 
   function handleNewCity(city) {
-    const newCity = {
-      id: Date.now(),
-      name: city.name,
-      country: city.country,
-      lat: city.lat,
-      lon: city.lon,
-      temp: "...",
-      emoji: "🌍",
-    };
+    // Logic unchanged
+    const newCity = { id: Date.now(), name: city.name, country: city.country, lat: city.lat, lon: city.lon, temp: "...", emoji: "🌍" };
     setCities((prev) => [...prev, newCity]);
     setActiveId(newCity.id);
     onCitySelect(newCity);
-
     getWeather(city.lat, city.lon).then((data) => {
       const temp = Math.round(data.current.temperature_2m);
       const emoji = getWeatherEmoji(data.current.weathercode);
-      setCities((prev) =>
-        prev.map((c) => (c.id === newCity.id ? { ...c, temp, emoji } : c))
-      );
+      setCities((prev) => prev.map((c) => (c.id === newCity.id ? { ...c, temp, emoji } : c)));
     });
   }
 
   return (
-    <aside className="flex flex-col w-[220px] h-screen bg-white border-r border-gray-200 px-4 py-5 gap-4">
-
+    <aside className="flex flex-col h-full bg-white px-6 py-8">
       {/* Logo */}
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-lg">
-          ⛅
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl shadow-lg shadow-blue-600/30">
+          ☁️
         </div>
-        <span className="text-sm font-medium text-gray-800">
-          WeatherScope <span className="text-blue-500">Pro</span>
+        <span className="text-lg font-bold text-slate-800">
+          WeatherScope <span className="text-blue-600">Pro</span>
         </span>
       </div>
 
-      <SearchBar onCitySelect={handleNewCity} />
+      <div className="mb-6"><SearchBar onCitySelect={handleNewCity} /></div>
 
-      <p className="text-[11px] font-medium text-gray-400 uppercase tracking-widest">
-        Saved locations
-      </p>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Saved locations</p>
 
-      <div className="flex flex-col gap-1 overflow-y-auto">
-        {cities.length === 0 && (
-          <p className="text-xs text-gray-400 text-center mt-4">Loading...</p>
-        )}
+      <div className="flex flex-col gap-2 overflow-y-auto flex-1 pb-4">
         {cities.map((city) => (
           <LocationCard
             key={city.id}
@@ -104,6 +88,16 @@ export default function Sidebar({ onCitySelect }) {
         ))}
       </div>
 
+      {/* Exact Upgrade Card from Inspiration Image */}
+      <div className="mt-auto bg-[#f5f7fb] rounded-[24px] p-5">
+        <h4 className="font-bold text-blue-600 text-sm mb-1">Upgrade to Pro</h4>
+        <p className="text-xs text-slate-500 font-medium mb-4 leading-relaxed">
+          Get detailed hurricane tracking and 30-day history.
+        </p>
+        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-2.5 rounded-xl transition-colors">
+          Upgrade Now
+        </button>
+      </div>
     </aside>
   );
 }

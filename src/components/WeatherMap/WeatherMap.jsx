@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WEATHER_URL } from "../../api/weather";
+import { WEATHER_URL } from "../../API/weather";
 
 function getTileCoordinates(lat, lon, zoom) {
   const latRad = (lat * Math.PI) / 180;
