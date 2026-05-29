@@ -1,6 +1,10 @@
 import React from "react";
-// Adjust this import path depending on exactly where your weatherApi.js is located
-import { getWeatherEmoji, getWeatherLabel, displayTemp } from "/workspaces/Weather-dashboard/src/API/weather.js";
+import { getWeatherEmoji, getWeatherLabel } from "../../api/weather.js";
+
+function displayTemp(tempC, unit) {
+  if (unit === "F") return Math.round((tempC * 9) / 5 + 32);
+  return Math.round(tempC);
+}
 
 export default function CurrentWeather({ data, unit }) {
   return (
@@ -14,7 +18,8 @@ export default function CurrentWeather({ data, unit }) {
           <span className="text-7xl">{getWeatherEmoji(data.weathercode)}</span>
           <div>
             <h2 className="text-6xl font-black tracking-tight text-slate-950">
-              {displayTemp(data.temperature_2m, unit)}° <span className="text-3xl text-slate-400">{unit}</span>
+              {displayTemp(data.temperature_2m, unit)}°{" "}
+              <span className="text-3xl text-slate-400">{unit}</span>
             </h2>
             <p className="mt-1 text-xl font-bold text-slate-600">
               {getWeatherLabel(data.weathercode)}

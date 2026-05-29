@@ -1,4 +1,4 @@
-const GEO_URL = "https://nominatim.openstreetmap.org";
+export const GEO_URL = "https://nominatim.openstreetmap.org";
 export const WEATHER_URL = "https://api.open-meteo.com/v1";
 
 export async function searchCities(query) {
@@ -32,8 +32,8 @@ export async function reverseGeocode(lat, lon) {
   );
   const data = await res.json();
   return {
-    name: data.address.city || data.address.town || data.address.village,
-    country: data.address.country,
+    name: data.address.city || data.address.town || data.address.village || "Unknown",
+    country: data.address.country || "",
   };
 }
 
@@ -65,7 +65,6 @@ export function getWeatherLabel(code) {
   return "Unknown";
 }
 
-// Add to the bottom of weatherApi.js
 export function displayTemp(celsiusTemp, unit) {
   if (unit === "F") return Math.round((celsiusTemp * 9) / 5 + 32);
   return Math.round(celsiusTemp);

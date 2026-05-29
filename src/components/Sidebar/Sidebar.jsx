@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import LocationCard from "./LocationCard";
-import { getWeather, getWeatherEmoji, reverseGeocode } from "../../API/weather";
+import { getWeather, getWeatherEmoji } from "../../api/weather";
 
 const DEFAULT_CITIES = [
+  { id: 1, name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 },
+  { id: 2, name: "New York", country: "United States", lat: 40.7128, lon: -74.006 },
+  { id: 3, name: "Dubai", country: "UAE", lat: 25.2048, lon: 55.2708 },
+  { id: 4, name: "Tokyo", country: "Japan", lat: 35.6762, lon: 139.6503 },
 ];
 
 export default function Sidebar({ onCitySelect }) {
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState(1);
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
@@ -20,62 +24,10 @@ export default function Sidebar({ onCitySelect }) {
           return { ...city, temp, emoji };
         })
       );
-
       setCities(updated);
-
-      if (!navigator.geolocation) {
-        setActiveId(updated[0].id);
-        onCitySelect(updated[0]);
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        async ({ coords }) => {
-          try {
-            const location = await reverseGeocode(coords.latitude, coords.longitude);
-            const data = await getWeather(coords.latitude, coords.longitude);
-            const temp = Math.round(data.current.temperature_2m);
-            const emoji = getWeatherEmoji(data.current.weathercode);
-
-            const currentLocationCity = {
-              id: Date.now(),
-              name: location.name || "Current Location",
-              country: location.country || "",
-              lat: coords.latitude,
-              lon: coords.longitude,
-              temp,
-              emoji,
-            };
-
-            setCities((prev) => {
-              if (prev.some((city) => city.lat === currentLocationCity.lat && city.lon === currentLocationCity.lon)) {
-                const existing = prev.find(
-                  (city) => city.lat === currentLocationCity.lat && city.lon === currentLocationCity.lon
-                );
-                setActiveId(existing.id);
-                onCitySelect(existing);
-                return prev;
-              }
-
-              setActiveId(currentLocationCity.id);
-              onCitySelect(currentLocationCity);
-              return [currentLocationCity, ...prev];
-            });
-          } catch (error) {
-            console.error("Unable to load current location weather:", error);
-            setActiveId(updated[0].id);
-            onCitySelect(updated[0]);
-          }
-        },
-        () => {
-          setActiveId(updated[0].id);
-          onCitySelect(updated[0]);
-        }
-      );
+      onCitySelect(updated[0]);
     }
-
     loadTemps();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleSelect(city) {
@@ -83,10 +35,11 @@ export default function Sidebar({ onCitySelect }) {
     onCitySelect(city);
   }
 
-  function handleRemoveCity(cityId) {
+  function handleDelete(id) {
+    if (cities.length === 1) return;
     setCities((prev) => {
-      const updated = prev.filter((city) => city.id !== cityId);
-      if (activeId === cityId && updated.length > 0) {
+      const updated = prev.filter((c) => c.id !== id);
+      if (id === activeId) {
         setActiveId(updated[0].id);
         onCitySelect(updated[0]);
       }
@@ -95,16 +48,6 @@ export default function Sidebar({ onCitySelect }) {
   }
 
   function handleNewCity(city) {
-    const existing = cities.find(
-      (item) => item.lat === city.lat && item.lon === city.lon
-    );
-
-    if (existing) {
-      setActiveId(existing.id);
-      onCitySelect(existing);
-      return;
-    }
-
     const newCity = {
       id: Date.now(),
       name: city.name,
@@ -116,21 +59,19 @@ export default function Sidebar({ onCitySelect }) {
     };
     setCities((prev) => [...prev, newCity]);
     setActiveId(newCity.id);
-    onCitySelect({ ...newCity, isLoading: true });
+    onCitySelect(newCity);
 
     getWeather(city.lat, city.lon).then((data) => {
       const temp = Math.round(data.current.temperature_2m);
       const emoji = getWeatherEmoji(data.current.weathercode);
-      const updatedCity = { ...newCity, temp, emoji, isLoading: false };
       setCities((prev) =>
-        prev.map((c) => (c.id === newCity.id ? updatedCity : c))
+        prev.map((c) => (c.id === newCity.id ? { ...c, temp, emoji } : c))
       );
-      onCitySelect(updatedCity);
     });
   }
 
   return (
-    <aside className="flex flex-col w-full h-full min-h-full bg-white border-r border-gray-200 px-4 py-5 gap-4 overflow-hidden">
+    <aside className="flex flex-col w-[220px] h-screen bg-white border-r border-gray-200 px-4 py-5 gap-4">
 
       {/* Logo */}
       <div className="flex items-center gap-2">
@@ -148,7 +89,7 @@ export default function Sidebar({ onCitySelect }) {
         Saved locations
       </p>
 
-      <div className="flex-1 min-h-0 max-h-[calc(100vh-220px)] flex flex-col gap-1 overflow-y-auto no-scrollbar">
+      <div className="flex flex-col gap-1 overflow-y-auto">
         {cities.length === 0 && (
           <p className="text-xs text-gray-400 text-center mt-4">Loading...</p>
         )}
@@ -158,7 +99,7 @@ export default function Sidebar({ onCitySelect }) {
             city={city}
             isActive={activeId === city.id}
             onClick={() => handleSelect(city)}
-            onRemove={() => handleRemoveCity(city.id)}
+            onDelete={handleDelete}
           />
         ))}
       </div>

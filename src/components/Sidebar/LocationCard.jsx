@@ -1,4 +1,4 @@
-export default function LocationCard({ city, isActive, onClick, onRemove }) {
+export default function LocationCard({ city, isActive, onClick, onDelete }) {
   return (
     <div
       onClick={onClick}
@@ -17,17 +17,17 @@ export default function LocationCard({ city, isActive, onClick, onRemove }) {
         <p className="text-[11px] text-gray-400 truncate">{city.country}</p>
       </div>
 
-      <span className={`text-sm font-medium ${isActive ? "text-blue-600" : "text-gray-500"}`}>
+      <span className={`group-hover:hidden text-sm font-medium ${isActive ? "text-blue-600" : "text-gray-500"}`}>
         {city.temp}°
       </span>
 
       <button
         type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          onRemove();
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(city.id);
         }}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
+        className="hidden group-hover:flex items-center justify-center w-5 h-5 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors text-xs"
         aria-label={`Remove ${city.name}`}
       >
         ✕

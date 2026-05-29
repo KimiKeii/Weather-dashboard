@@ -1,6 +1,5 @@
-// src/hooks/useWeather.js
 import { useState, useEffect, useCallback } from "react";
-import { getWeather, reverseGeocode } from "/workspaces/Weather-dashboard/src/API/weather.js";
+import { getWeather, reverseGeocode } from "../api/weather";
 
 export function useWeather() {
   const [selectedCity, setSelectedCity] = useState(null);
@@ -23,22 +22,8 @@ export function useWeather() {
   }, []);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            const geo = await reverseGeocode(latitude, longitude);
-            fetchWeather(latitude, longitude, geo.name, geo.country);
-          } catch {
-            fetchWeather(51.5074, -0.1278, "London", "UK");
-          }
-        },
-        () => fetchWeather(51.5074, -0.1278, "London", "UK")
-      );
-    } else {
-      fetchWeather(51.5074, -0.1278, "London", "UK");
-    }
+    // Default to London — skip geolocation to avoid CORS issues with Nominatim
+    fetchWeather(51.5074, -0.1278, "London", "United Kingdom");
   }, [fetchWeather]);
 
   return { weatherData, isLoading, error, selectedCity, fetchWeather };
