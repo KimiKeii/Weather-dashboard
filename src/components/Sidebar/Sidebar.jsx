@@ -87,17 +87,6 @@ export default function Sidebar({ onCitySelect }) {
           />
         ))}
       </div>
-
-      {/* Exact Upgrade Card from Inspiration Image */}
-      <div className="mt-auto bg-[#f5f7fb] rounded-[24px] p-5">
-        <h4 className="font-bold text-blue-600 text-sm mb-1">Upgrade to Pro</h4>
-        <p className="text-xs text-slate-500 font-medium mb-4 leading-relaxed">
-          Get detailed hurricane tracking and 30-day history.
-        </p>
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-2.5 rounded-xl transition-colors">
-          Upgrade Now
-        </button>
-      </div>
     </aside>
   );
 }
