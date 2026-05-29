@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getWeather, reverseGeocode } from "../api/weather";
+import { getWeather, reverseGeocode } from "../API/weather";
 
 export function useWeather() {
   const [selectedCity, setSelectedCity] = useState(null);

@@ -1,24 +1,38 @@
 import React from "react";
+import { getWeatherEmoji, displayTemp } from "../../API/weather";
 
-export default function ForecastGrid({ forecastData }) {
+export default function ForecastGrid({ data, unit }) {
   return (
-    /* The core container layout defining box spacing */
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-      {forecastData.map((item, index) => {
-        const Icon = item.icon;
+    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 h-full">
+      {data.time.map((time, index) => {
+        // Assume index 0 is today/active
+        const isActive = index === 0;
+        
         return (
           <div
-            key={index}
-            className={`flex flex-col items-center justify-center rounded-3xl p-5 transition-all ${
-              item.active
-                ? "border-[2px] border-blue-500 bg-blue-50 shadow-sm" 
-                : "border-[2px] border-transparent bg-white shadow-sm hover:border-slate-100" 
+            key={time}
+            className={`flex flex-col items-center justify-center rounded-[24px] p-4 transition-all shadow-sm ${
+              isActive
+                ? "bg-blue-50 border border-blue-100" 
+                : "bg-white border border-transparent"
             }`}
           >
-            <span className="mb-3 text-xs font-bold text-slate-400">{item.day}</span>
-            <Icon className={`mb-3 h-7 w-7 ${item.iconColor}`} />
-            <span className="text-lg font-black text-slate-800">{item.high}</span>
-            <span className="text-sm font-bold text-slate-400">{item.low}</span>
+            <span className={`text-xs font-bold uppercase tracking-wider mb-2 ${isActive ? 'text-blue-500' : 'text-slate-400'}`}>
+              {new Date(time).toLocaleDateString(undefined, { weekday: 'short' })}
+            </span>
+            
+            <span className="text-3xl my-2">
+              {getWeatherEmoji(data.weathercode[index])}
+            </span>
+            
+            <div className="mt-2 text-center">
+              <span className={`block text-sm font-black ${isActive ? 'text-blue-900' : 'text-slate-800'}`}>
+                {displayTemp(data.temperature_2m_max[index], unit)}°
+              </span>
+              <span className={`block text-xs font-bold mt-0.5 ${isActive ? 'text-blue-400' : 'text-slate-400'}`}>
+                {displayTemp(data.temperature_2m_min[index], unit)}°
+              </span>
+            </div>
           </div>
         );
       })}
