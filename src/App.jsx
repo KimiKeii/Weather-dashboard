@@ -5,7 +5,7 @@ import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import Forecast from "./components/Forecast/ForecastCard.jsx";
 
 // Import our new custom hook
-import { useWeather } from "./hooks/useWeather";
+import { useWeather } from "/workspaces/Weather-dashboard/src/hooks/useWeather.js";
 
 function App() {
   const [unit, setUnit] = useState("C");

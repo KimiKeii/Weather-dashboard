@@ -1,6 +1,6 @@
 // src/hooks/useWeather.js
 import { useState, useEffect, useCallback } from "react";
-import { getWeather, reverseGeocode } from "../weatherApi"; // Adjust path as needed
+import { getWeather, reverseGeocode } from "/workspaces/Weather-dashboard/src/API/weather.js";
 
 export function useWeather() {
   const [selectedCity, setSelectedCity] = useState(null);

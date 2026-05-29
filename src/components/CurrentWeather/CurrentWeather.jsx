@@ -1,6 +1,6 @@
 import React from "react";
 // Adjust this import path depending on exactly where your weatherApi.js is located
-import { getWeatherEmoji, getWeatherLabel, displayTemp } from "../../weatherApi";
+import { getWeatherEmoji, getWeatherLabel, displayTemp } from "/workspaces/Weather-dashboard/src/API/weather.js";
 
 export default function CurrentWeather({ data, unit }) {
   return (
