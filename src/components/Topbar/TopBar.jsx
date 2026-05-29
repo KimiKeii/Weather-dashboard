@@ -81,7 +81,7 @@ function TopBar({
           <MenuIcon />
         </button>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex flex-col">
           <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
             {cityName}, {countryCode}
           </h1>

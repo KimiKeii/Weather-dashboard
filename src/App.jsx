@@ -28,7 +28,7 @@ function App() {
             <aside className="h-full w-[300px] bg-white p-6 shadow-2xl">
               <button
                 type="button"
-                onClick={() => setSidebarOpen(false)}
+                onClick={() => setSidebarOpen(true)}
                 className="mb-5 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600"
               >
                 Close
@@ -36,7 +36,7 @@ function App() {
 
               <Sidebar onCitySelect={(city) => {
                 setSelectedCity(city);
-                setSidebarOpen(false);
+                setSidebarOpen(true);
               }} />
             </aside>
           </div>
