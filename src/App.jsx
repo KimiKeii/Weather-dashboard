@@ -1,44 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
-import ForecastCard from "./components/Forecast/ForecastCard.jsx";
-import WeatherMap from "./components/WeatherMap/WeatherMap.jsx";
-import { Wind, Droplets, Eye } from "lucide-react";
+// Import your API utilities
+import { getWeather, reverseGeocode, getWeatherEmoji, getWeatherLabel } from "./API/weather.js";
 
 function App() {
+  // UI State
   const [unit, setUnit] = useState("C");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Data State
   const [selectedCity, setSelectedCity] = useState(null);
-  const [isCityLoading, setIsCityLoading] = useState(false);
+  const [weatherData, setWeatherData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  function handleRefresh() {
+  // --- Core API Logic ---
+  
+  const fetchWeather = async (lat, lon, name, country) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await getWeather(lat, lon);
+      setWeatherData(data);
+      setSelectedCity({ name, country, lat, lon });
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch weather data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial Load: Try Geolocation, fallback to London
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const geo = await reverseGeocode(latitude, longitude);
+            fetchWeather(latitude, longitude, geo.name, geo.country);
+          } catch {
+            // Fallback if reverse geocode fails
+            fetchWeather(51.5074, -0.1278, "London", "UK");
+          }
+        },
+        () => {
+          // Fallback if user denies location
+          fetchWeather(51.5074, -0.1278, "London", "UK");
+        }
+      );
+    } else {
+      fetchWeather(51.5074, -0.1278, "London", "UK");
+    }
+  }, []);
+
+  // --- Handlers ---
+
+  async function handleRefresh() {
+    if (!selectedCity) return;
     setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 800);
+    await fetchWeather(selectedCity.lat, selectedCity.lon, selectedCity.name, selectedCity.country);
+    setIsRefreshing(false);
   }
 
   const handleCitySelect = (city) => {
-    setSelectedCity(city);
-    setIsCityLoading(city?.isLoading ?? false);
-    if (sidebarOpen) {
-      setSidebarOpen(false);
-    }
+    // Expects city object from Sidebar: { lat, lon, name, country }
+    if (sidebarOpen) setSidebarOpen(false);
+    fetchWeather(city.lat, city.lon, city.name, city.country);
+  };
+
+  // Helper to convert Celsius to Fahrenheit on the fly based on 'unit' state
+  const displayTemp = (celsiusTemp) => {
+    if (unit === "F") return Math.round((celsiusTemp * 9) / 5 + 32);
+    return Math.round(celsiusTemp);
   };
 
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14">
-      <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl">
+      <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
         
-        {/* Desktop Sidebar Area */}
-        <div className="hidden lg:block lg:fixed lg:top-0 lg:left-0 lg:h-screen lg:w-[300px] lg:overflow-y-auto">
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:block lg:w-[300px] lg:shrink-0">
           <Sidebar onCitySelect={handleCitySelect} />
         </div>
 
-        {/* Mobile Flyout Drawer Menu */}
-        <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
+        {/* Mobile Sidebar overlay */}
+        <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
           <div className="absolute inset-0 bg-slate-950/40" onClick={() => setSidebarOpen(false)} />
           <aside className="relative z-10 h-screen w-[85%] max-w-sm bg-white p-6 shadow-2xl overflow-hidden">
             <button
@@ -52,12 +102,11 @@ function App() {
           </aside> {/* FIX: Resolved structural character break here */}
         </div>
 
-        {/* Central Workspace Canvas */}
-        <section className="flex min-w-0 flex-1 flex-col lg:ml-[300px]">
+        {/* Main Content Area */}
+        <section className="flex min-w-0 flex-1 flex-col overflow-y-auto">
           <TopBar
             cityName={selectedCity?.name ?? "Loading..."}
             countryCode={selectedCity?.country ?? ""}
-            isLoading={isCityLoading}
             date={new Date()}
             unit={unit}
             onUnitChange={setUnit}
@@ -66,67 +115,92 @@ function App() {
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
-          {/* Main Layout Grid Section */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:p-10 pt-[92px] lg:pt-[94px]">
-            <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-8 xl:grid-cols-2">
+          <div className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10">
+            <div className="mx-auto max-w-5xl">
               
-              {/* ROW 1, COL 1: Current Weather Card Component */}
-              <div className="relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-white p-8 shadow-sm sm:p-10">
-                <div className="z-10">
-                  <span className="inline-block rounded-full bg-blue-50 px-4 py-1.5 text-xs font-bold tracking-widest text-blue-600">
-                    CURRENT WEATHER
-                  </span>
+              {/* Status States */}
+              {isLoading && (
+                <div className="animate-pulse flex flex-col items-center justify-center py-20">
+                  <div className="h-12 w-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin"></div>
+                  <p className="mt-4 font-semibold text-slate-400">Fetching the latest weather...</p>
+                </div>
+              )}
+              
+              {error && (
+                <div className="rounded-[28px] bg-red-50 p-8 text-center text-red-600 shadow-sm">
+                  <p className="font-bold">{error}</p>
+                </div>
+              )}
+
+              {/* Dynamic Weather Dashboard */}
+              {!isLoading && !error && weatherData && (
+                <div className="space-y-6">
                   
-                  <div className="mt-8 flex items-start">
-                    <h1 className="text-7xl font-black tracking-tighter text-slate-950 sm:text-8xl">
-                      18°
-                    </h1>
-                    <span className="ml-2 mt-2 text-3xl font-bold text-slate-400 sm:text-4xl">
-                      {unit}
-                    </span>
+                  {/* Current Weather Card */}
+                  <div className="rounded-[28px] bg-white p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+                        Current Conditions
+                      </p>
+                      <div className="flex items-center gap-4 mt-4">
+                        <span className="text-7xl">{getWeatherEmoji(weatherData.current.weathercode)}</span>
+                        <div>
+                          <h2 className="text-6xl font-black tracking-tight text-slate-950">
+                            {displayTemp(weatherData.current.temperature_2m)}° <span className="text-3xl text-slate-400">{unit}</span>
+                          </h2>
+                          <p className="text-xl font-bold text-slate-600 mt-1">
+                            {getWeatherLabel(weatherData.current.weathercode)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 gap-4 w-full md:w-auto md:min-w-[300px]">
+                      <div className="bg-slate-50 p-4 rounded-2xl">
+                        <p className="text-sm font-semibold text-slate-400">Wind</p>
+                        <p className="text-lg font-bold text-slate-800">{weatherData.current.windspeed_10m} km/h</p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl">
+                        <p className="text-sm font-semibold text-slate-400">Humidity</p>
+                        <p className="text-lg font-bold text-slate-800">{weatherData.current.relativehumidity_2m}%</p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl">
+                        <p className="text-sm font-semibold text-slate-400">Visibility</p>
+                        <p className="text-lg font-bold text-slate-800">{(weatherData.current.visibility / 1000).toFixed(1)} km</p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl">
+                        <p className="text-sm font-semibold text-slate-400">UV Index</p>
+                        <p className="text-lg font-bold text-slate-800">{weatherData.current.uv_index}</p>
+                      </div>
+                    </div>
                   </div>
 
-                  <p className="mt-3 text-xl font-bold text-slate-700 sm:text-2xl">
-                    Mostly Sunny
-                  </p>
+                  {/* 7-Day Forecast */}
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-800 mb-4 px-2">7-Day Forecast</h3>
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7">
+                      {weatherData.daily.time.map((time, index) => (
+                        <div key={time} className="flex flex-col items-center justify-center rounded-[24px] bg-white p-5 shadow-sm transition-transform hover:scale-105">
+                          <p className="text-sm font-bold text-slate-400">
+                            {new Date(time).toLocaleDateString(undefined, { weekday: 'short' })}
+                          </p>
+                          <p className="my-3 text-4xl">
+                            {getWeatherEmoji(weatherData.daily.weathercode[index])}
+                          </p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {displayTemp(weatherData.daily.temperature_2m_max[index])}°
+                            <span className="ml-2 font-medium text-slate-400">
+                              {displayTemp(weatherData.daily.temperature_2m_min[index])}°
+                            </span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
-
-                {/* Card Sub-Metrics Footer block */}
-                <div className="z-10 mt-12 flex flex-wrap gap-6 border-t border-slate-100 pt-6 text-sm font-semibold text-slate-500">
-                  <div className="flex items-center gap-2">
-                    <Wind className="h-5 w-5 text-blue-400" /> 12 km/h
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Droplets className="h-5 w-5 text-blue-400" /> 45%
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Eye className="h-5 w-5 text-blue-400" /> 10 km
-                  </div>
-                </div>
-
-                {/* Decorative absolute sun element container */}
-                <div className="absolute -right-4 top-6 h-44 w-44 opacity-80 sm:opacity-100">
-                  <div className="absolute right-6 top-6 h-28 w-28 rounded-full bg-amber-400 shadow-xl shadow-amber-300/40" />
-                  <div className="absolute bottom-4 right-10 h-20 w-32 rounded-full border border-slate-50/50 bg-white/90 backdrop-blur-sm shadow-md" />
-                </div>
-              </div>
-
-              {/* ROW 1, COL 2: Today's Scalable Highlights Component */}
-              <div>
-                <TodayHighlight />
-              </div>
-
-              {/* ROW 2, COL 1: Refactored 7-Day Forecast Wrapper Card */}
-              <div>
-                <ForecastCard />
-              </div>
-
-              {/* ROW 2, COL 2: Unified Weather Map Container */}
-              <div className="flex flex-col h-full">
-                 <h3 className="mb-6 text-xl font-bold text-slate-800">Weather Map</h3>
-                 <WeatherMap location={selectedCity} />
-              </div>
-
+              )}
             </div>
           </div>
         </section>
