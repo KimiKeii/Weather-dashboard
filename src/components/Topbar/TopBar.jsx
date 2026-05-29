@@ -58,8 +58,8 @@ function formatTopBarDate(date) {
 }
 
 function TopBar({
-  cityName = "London",
-  countryCode = "UK",
+  cityName = "Loading..",
+  countryCode = "",
   date = new Date(),
   unit = "C",
   onUnitChange,

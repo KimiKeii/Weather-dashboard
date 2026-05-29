@@ -52,8 +52,8 @@ function App() {
         {/* Main Workspace Content Area */}
         <section className="flex min-w-0 flex-1 flex-col">
           <TopBar
-            cityName={selectedCity?.name ?? "London"}
-            countryCode={selectedCity?.country ?? "UK"}
+            cityName={selectedCity?.name ?? "Loading..."}
+            countryCode={selectedCity?.country ?? ""}
             date={new Date()}
             unit={unit}
             onUnitChange={setUnit}
