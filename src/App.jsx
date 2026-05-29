@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
+import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
+import Weathermap from "./components/Weathermap/Weathermap.jsx";
+
+
 // Import your API utilities
 import { getWeather, reverseGeocode, getWeatherEmoji, getWeatherLabel } from "./API/weather.js";
 
