@@ -1,6 +1,9 @@
 import { useState } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
+// FIX: Imported the new scalable highlights component here
+import TodayHighlights from "./components/TodayHighlight/TodayHighlight.jsx"; 
+import { Wind, Droplets, Eye } from "lucide-react";
 
 function App() {
   const [unit, setUnit] = useState("C");
@@ -10,7 +13,6 @@ function App() {
 
   function handleRefresh() {
     setIsRefreshing(true);
-
     setTimeout(() => {
       setIsRefreshing(false);
     }, 800);
@@ -26,10 +28,13 @@ function App() {
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14">
       <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
+        
+        {/* Desktop Sidebar */}
         <div className="hidden lg:block lg:w-[300px] lg:shrink-0">
           <Sidebar onCitySelect={handleCitySelect} />
         </div>
 
+        {/* Mobile Sidebar Flyout */}
         <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
           <div className="absolute inset-0 bg-slate-950/40" onClick={() => setSidebarOpen(false)} />
           <aside className="relative z-10 h-screen w-[85%] max-w-sm bg-white p-6 shadow-2xl overflow-hidden">
@@ -40,11 +45,11 @@ function App() {
             >
               Close
             </button>
-
             <Sidebar onCitySelect={handleCitySelect} />
           </aside>
         </div>
 
+        {/* Main Workspace Content Area */}
         <section className="flex min-w-0 flex-1 flex-col">
           <TopBar
             cityName={selectedCity?.name ?? "London"}
@@ -57,32 +62,65 @@ function App() {
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
-          <div className="flex-1 overflow-hidden p-4 sm:p-6 lg:p-8 xl:p-10">
-            <div className="mx-auto max-w-3xl rounded-[28px] bg-white p-8 shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
-                Top Bar Test Area
-              </p>
+          {/* FIX: Set container to allow scrolling naturally for high density rows */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:p-10">
+            
+            {/* FIX: Created the split columns layout framework (Left = Weather Card, Right = Highlights) */}
+            <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-8 xl:grid-cols-2">
+              
+              {/* Current Weather Card (Left Column) */}
+              <div className="relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-white p-8 shadow-sm sm:p-10">
+                <div className="z-10">
+                  <span className="inline-block rounded-full bg-blue-50 px-4 py-1.5 text-xs font-bold tracking-widest text-blue-600">
+                    CURRENT WEATHER
+                  </span>
+                  
+                  <div className="mt-8 flex items-start">
+                    <h1 className="text-7xl font-black tracking-tighter text-slate-950 sm:text-8xl">
+                      18°
+                    </h1>
+                    <span className="ml-2 mt-2 text-3xl font-bold text-slate-400 sm:text-4xl">
+                      {unit}
+                    </span>
+                  </div>
 
-              <h2 className="mt-5 text-6xl font-black tracking-tight text-slate-950">
-                18° <span className="text-2xl text-slate-400">{unit}</span>
-              </h2>
+                  <p className="mt-3 text-xl font-bold text-slate-700 sm:text-2xl">
+                    Mostly Sunny
+                  </p>
+                </div>
 
-              <p className="mt-3 text-xl font-bold text-slate-600">
-                Mostly Sunny
-              </p>
+                {/* Sub-Metrics section within Current Weather Card */}
+                <div className="z-10 mt-12 flex flex-wrap gap-6 border-t border-slate-100 pt-6 text-sm font-semibold text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <Wind className="h-5 w-5 text-blue-400" /> 12 km/h
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Droplets className="h-5 w-5 text-blue-400" /> 45%
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-blue-400" /> 10 km
+                  </div>
+                </div>
 
-              <p className="mt-4 text-sm leading-6 text-slate-400">
-                If you can see this card with spacing, rounded corners, blue
-                buttons, and a proper top bar, Tailwind is now working.
-              </p>
+                {/* Decorative Sun/Cloud graphic placement container matching mockup layout */}
+                <div className="absolute -right-4 top-6 h-44 w-44 opacity-80 sm:opacity-100">
+                  <div className="absolute right-6 top-6 h-28 w-28 rounded-full bg-amber-400 shadow-xl shadow-amber-300/40" />
+                  <div className="absolute bottom-4 right-10 h-20 w-32 rounded-full border border-slate-50/50 bg-white/90 backdrop-blur-sm shadow-md" />
+                </div>
+              </div>
+
+              {/* Today's Highlights Component (Right Column) */}
+              {/* It maps over metrics dynamically, making additions instantly scalable */}
+              <div>
+                <TodayHighlights />
+              </div>
+
             </div>
           </div>
         </section>
       </section>
     </main>
   );
-
-  
 }
 
 export default App;
