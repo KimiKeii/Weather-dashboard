@@ -1,8 +1,9 @@
 import { useState } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx"; 
+import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
+import WeatherMap from "./components/WeatherMap/WeatherMap.jsx";
 import { Wind, Droplets, Eye } from "lucide-react";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState(null);
+  const [isCityLoading, setIsCityLoading] = useState(false);
 
   function handleRefresh() {
     setIsRefreshing(true);
@@ -20,6 +22,7 @@ function App() {
 
   const handleCitySelect = (city) => {
     setSelectedCity(city);
+    setIsCityLoading(city?.isLoading ?? false);
     if (sidebarOpen) {
       setSidebarOpen(false);
     }
@@ -27,15 +30,15 @@ function App() {
 
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14">
-      <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
+      <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl">
         
         {/* Desktop Sidebar Area */}
-        <div className="hidden lg:block lg:w-[300px] lg:shrink-0">
+        <div className="hidden lg:block lg:fixed lg:top-0 lg:left-0 lg:h-screen lg:w-[300px] lg:overflow-y-auto">
           <Sidebar onCitySelect={handleCitySelect} />
         </div>
 
         {/* Mobile Flyout Drawer Menu */}
-        <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
+        <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
           <div className="absolute inset-0 bg-slate-950/40" onClick={() => setSidebarOpen(false)} />
           <aside className="relative z-10 h-screen w-[85%] max-w-sm bg-white p-6 shadow-2xl overflow-hidden">
             <button
@@ -50,10 +53,11 @@ function App() {
         </div>
 
         {/* Central Workspace Canvas */}
-        <section className="flex min-w-0 flex-1 flex-col">
+        <section className="flex min-w-0 flex-1 flex-col lg:ml-[300px]">
           <TopBar
-            cityName={selectedCity?.name ?? "London"}
-            countryCode={selectedCity?.country ?? "UK"}
+            cityName={selectedCity?.name ?? "Loading..."}
+            countryCode={selectedCity?.country ?? ""}
+            isLoading={isCityLoading}
             date={new Date()}
             unit={unit}
             onUnitChange={setUnit}
@@ -63,7 +67,7 @@ function App() {
           />
 
           {/* Main Layout Grid Section */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:p-10">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:p-10 pt-[92px] lg:pt-[94px]">
             <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-8 xl:grid-cols-2">
               
               {/* ROW 1, COL 1: Current Weather Card Component */}
@@ -109,7 +113,7 @@ function App() {
 
               {/* ROW 1, COL 2: Today's Scalable Highlights Component */}
               <div>
-                <TodayHighlights />
+                <TodayHighlight />
               </div>
 
               {/* ROW 2, COL 1: Refactored 7-Day Forecast Wrapper Card */}
@@ -120,9 +124,7 @@ function App() {
               {/* ROW 2, COL 2: Unified Weather Map Container */}
               <div className="flex flex-col h-full">
                  <h3 className="mb-6 text-xl font-bold text-slate-800">Weather Map</h3>
-                 <div className="flex-1 rounded-[32px] bg-[#48b5c9] opacity-90 shadow-sm min-h-[250px] flex items-center justify-center text-white font-bold tracking-widest">
-                    [ MAP COMPONENT ]
-                 </div>
+                 <WeatherMap location={selectedCity} />
               </div>
 
             </div>

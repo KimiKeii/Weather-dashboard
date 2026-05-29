@@ -1,5 +1,5 @@
 const GEO_URL = "https://nominatim.openstreetmap.org";
-const WEATHER_URL = "https://api.open-meteo.com/v1";
+export const WEATHER_URL = "https://api.open-meteo.com/v1";
 
 export async function searchCities(query) {
   const res = await fetch(

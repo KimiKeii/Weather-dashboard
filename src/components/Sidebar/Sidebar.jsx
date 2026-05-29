@@ -116,14 +116,16 @@ export default function Sidebar({ onCitySelect }) {
     };
     setCities((prev) => [...prev, newCity]);
     setActiveId(newCity.id);
-    onCitySelect(newCity);
+    onCitySelect({ ...newCity, isLoading: true });
 
     getWeather(city.lat, city.lon).then((data) => {
       const temp = Math.round(data.current.temperature_2m);
       const emoji = getWeatherEmoji(data.current.weathercode);
+      const updatedCity = { ...newCity, temp, emoji, isLoading: false };
       setCities((prev) =>
-        prev.map((c) => (c.id === newCity.id ? { ...c, temp, emoji } : c))
+        prev.map((c) => (c.id === newCity.id ? updatedCity : c))
       );
+      onCitySelect(updatedCity);
     });
   }
 

@@ -65,12 +65,14 @@ function TopBar({
   onUnitChange,
   onRefresh,
   isRefreshing = false,
+  isLoading = false,
   onOpenSidebar,
 }) {
   const formattedDate = formatTopBarDate(date);
+  const displayName = isLoading ? "Loading..." : cityName;
 
   return (
-    <header className="flex h-[76px] w-full items-center justify-between border-b border-slate-100 bg-white px-5 md:px-8 lg:px-10">
+    <header className="fixed top-0 left-0 right-0 z-40 flex h-[76px] items-center justify-between border-b border-slate-100 bg-white/95 px-5 md:px-8 lg:px-10 backdrop-blur-sm lg:left-[300px] lg:right-0">
       <div className="flex min-w-0 items-center gap-4">
         <button
           type="button"
@@ -83,10 +85,9 @@ function TopBar({
 
         <div className="min-w-0 flex flex-col">
           <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
-            {cityName}, {countryCode}
+            {displayName}{countryCode && !isLoading ? `, ${countryCode}` : ""}
           </h1>
-
-          <p className="mt-1 text-xs font-medium text-slate-400 md:text-sm">
+          <p className="mt-0 text-xs font-medium leading-tight text-slate-400 md:text-sm">
             {formattedDate}
           </p>
         </div>
