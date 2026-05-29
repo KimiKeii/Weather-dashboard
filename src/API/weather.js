@@ -64,3 +64,9 @@ export function getWeatherLabel(code) {
   if (code <= 99) return "Thunderstorm";
   return "Unknown";
 }
+
+// Add to the bottom of weatherApi.js
+export function displayTemp(celsiusTemp, unit) {
+  if (unit === "F") return Math.round((celsiusTemp * 9) / 5 + 32);
+  return Math.round(celsiusTemp);
+}
