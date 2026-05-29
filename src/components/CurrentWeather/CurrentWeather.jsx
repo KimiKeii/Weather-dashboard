@@ -42,7 +42,7 @@ export default function CurrentWeather({ data, unit }) {
       </div>
 
       {/* Huge Background Icon with Glow */}
-      <div className="absolute -right-6 top-1/2 -translate-y-1/2 text-[160px] leading-none select-none z-0">
+      <div className="absolute right-16 top-1/2 -translate-y-1/2 text-[160px] leading-none select-none z-0">
         <div className="absolute inset-0 bg-yellow-400 blur-3xl opacity-20 rounded-full w-32 h-32 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         <span className="relative z-10 drop-shadow-2xl">{getWeatherEmoji(data.weathercode)}</span>
       </div>

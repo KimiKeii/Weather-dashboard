@@ -3,30 +3,29 @@ import { getWeatherEmoji, displayTemp } from "../../API/weather";
 
 export default function ForecastGrid({ data, unit }) {
   return (
-    /* Changed grid to 4 columns max so the 7 days wrap into 2 rows of squares */
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 h-full">
+    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 h-full">
       {data.time.map((time, index) => {
+        // Assume index 0 is today/active
         const isActive = index === 0;
         
         return (
           <div
             key={time}
-            // aspect-square forces the div to be a perfect square regardless of screen size
-            className={`aspect-square flex flex-col items-center justify-center rounded-[28px] p-3 transition-all shadow-sm ${
+            className={`flex flex-col items-center justify-center rounded-[24px] p-4 transition-all shadow-sm ${
               isActive
-                ? "bg-blue-50 border-[2px] border-blue-100" 
-                : "bg-white border-[2px] border-transparent hover:border-slate-100"
+                ? "bg-blue-50 border border-blue-100" 
+                : "bg-white border border-transparent"
             }`}
           >
-            <span className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${isActive ? 'text-blue-600' : 'text-slate-400'}`}>
+            <span className={`text-xs font-bold uppercase tracking-wider mb-2 ${isActive ? 'text-blue-500' : 'text-slate-400'}`}>
               {new Date(time).toLocaleDateString(undefined, { weekday: 'short' })}
             </span>
             
-            <span className="text-3xl my-2 drop-shadow-sm">
+            <span className="text-3xl my-2">
               {getWeatherEmoji(data.weathercode[index])}
             </span>
             
-            <div className="mt-1 text-center">
+            <div className="mt-2 text-center">
               <span className={`block text-sm font-black ${isActive ? 'text-blue-900' : 'text-slate-800'}`}>
                 {displayTemp(data.temperature_2m_max[index], unit)}°
               </span>

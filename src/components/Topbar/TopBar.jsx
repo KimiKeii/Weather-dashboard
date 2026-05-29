@@ -1,7 +1,15 @@
-// Keep your existing SVG icon functions at the top of the file...
-function MenuIcon() { /* ... */ return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
-function RefreshIcon({ spinning }) { /* ... */ return <svg className={spinning ? "animate-spin" : ""} width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 11A8.1 8.1 0 0 0 4.5 8.5M4 5V9H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 13A8.1 8.1 0 0 0 19.5 15.5M20 19V15H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
-function formatTopBarDate(date) { /* ... */ const parsedDate = date ? new Date(date) : new Date(); return parsedDate.toLocaleDateString("en-US", { weekday: "long", day: "2-digit", month: "short", year: "numeric", }); }
+function MenuIcon() { return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
+function RefreshIcon({ spinning }) { return <svg className={spinning ? "animate-spin" : ""} width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 11A8.1 8.1 0 0 0 4.5 8.5M4 5V9H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 13A8.1 8.1 0 0 0 19.5 15.5M20 19V15H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+
+function formatTopBarDate(date) {
+  const parsedDate = date ? new Date(date) : new Date();
+  return parsedDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 function TopBar({
   cityName = "London",
@@ -16,36 +24,63 @@ function TopBar({
   const formattedDate = formatTopBarDate(date);
 
   return (
-    <header className="flex h-[88px] w-full items-center justify-between bg-[#f5f7fb] px-6 lg:px-8 py-4">
+    <header className="flex w-full items-center justify-between bg-white px-6 lg:px-8 py-4">
       <div className="flex min-w-0 items-center gap-4">
-        <button type="button" onClick={onOpenSidebar} className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200 text-slate-600 lg:hidden">
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200 text-slate-600 lg:hidden"
+        >
           <MenuIcon />
         </button>
 
         <div className="min-w-0 flex flex-col">
-          <h1 className="truncate text-2xl font-bold tracking-tight text-slate-900">
+          <p className="truncate text-2xl font-bold tracking-tight text-slate-900 leading-none ">
             {cityName}, {countryCode}
-          </h1>
-          <p className="text-sm font-semibold text-slate-500 mt-0.5">
+          </p>
+          <p className="text-sm font-semibold text-slate-700 mt-2 leading-none">
             {formattedDate}
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Toggle Box matching image */}
         <div className="flex rounded-xl bg-white shadow-sm p-1">
-          <button type="button" onClick={() => onUnitChange("C")} className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${unit === "C" ? "bg-blue-600 text-white" : "text-slate-500 hover:bg-slate-100"}`}>°C</button>
-          <button type="button" onClick={() => onUnitChange("F")} className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${unit === "F" ? "bg-blue-600 text-white" : "text-slate-500 hover:bg-slate-100"}`}>°F</button>
+          <button
+            type="button"
+            onClick={() => onUnitChange("C")}
+            className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${
+              unit === "C" ? "bg-blue-600 text-white" : "text-slate-500 hover:bg-slate-100"
+            }`}
+          >
+            °C
+          </button>
+          <button
+            type="button"
+            onClick={() => onUnitChange("F")}
+            className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${
+              unit === "F" ? "bg-blue-600 text-white" : "text-slate-500 hover:bg-slate-100"
+            }`}
+          >
+            °F
+          </button>
         </div>
 
-        <button type="button" onClick={onRefresh} disabled={isRefreshing} className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white transition hover:bg-blue-700 disabled:opacity-70">
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white transition hover:bg-blue-700 disabled:opacity-70"
+        >
           <RefreshIcon spinning={isRefreshing} />
         </button>
 
-        {/* Profile Picture Placeholder */}
         <div className="h-10 w-10 rounded-xl bg-slate-300 overflow-hidden shadow-sm">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Profile" className="w-full h-full object-cover" />
+          <img
+            src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix"
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
     </header>
