@@ -59,7 +59,7 @@ export default function Sidebar({ onCitySelect }) {
   }
 
   return (
-    <aside className="flex flex-col w-[220px] h-screen bg-white border-r border-gray-200 px-4 py-5 gap-4">
+    <aside className="flex flex-col w-full h-full min-h-full bg-white border-r border-gray-200 px-4 py-5 gap-4">
 
       {/* Logo */}
       <div className="flex items-center gap-2">

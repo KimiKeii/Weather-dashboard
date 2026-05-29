@@ -1,10 +1,12 @@
 import { useState } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
+import Sidebar from "./components/Sidebar/Sidebar.jsx";
 
 function App() {
   const [unit, setUnit] = useState("C");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   function handleRefresh() {
     setIsRefreshing(true);
@@ -15,23 +17,10 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 md:px-8 lg:px-10">
-      <section className="mx-auto flex min-h-[calc(100vh-48px)] max-w-[1500px] overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl">
-        <aside className="hidden w-[280px] shrink-0 border-r border-slate-100 bg-white p-6 lg:block">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-xl text-white">
-              ☁
-            </div>
-
-            <h2 className="text-lg font-bold tracking-tight">
-              WeatherScope <span className="text-blue-600">Pro</span>
-            </h2>
-          </div>
-
-          <p className="mt-8 text-sm leading-6 text-slate-400">
-            Sidebar placeholder only. The repository owner will replace this
-            section.
-          </p>
+    <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14">
+      <section className="mx-auto flex w-full max-w-[1600px] min-h-[calc(100vh-48px)] flex-col overflow-hidden rounded-[34px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
+        <aside className="hidden lg:block lg:w-[300px] lg:shrink-0">
+          <Sidebar onCitySelect={(city) => setSelectedCity(city)} />
         </aside>
 
         {sidebarOpen && (
@@ -45,17 +34,18 @@ function App() {
                 Close
               </button>
 
-              <p className="text-sm text-slate-500">
-                Mobile sidebar placeholder.
-              </p>
+              <Sidebar onCitySelect={(city) => {
+                setSelectedCity(city);
+                setSidebarOpen(false);
+              }} />
             </aside>
           </div>
         )}
 
         <section className="flex min-w-0 flex-1 flex-col">
           <TopBar
-            cityName="London"
-            countryCode="UK"
+            cityName={selectedCity?.name ?? "London"}
+            countryCode={selectedCity?.country ?? "UK"}
             date={new Date()}
             unit={unit}
             onUnitChange={setUnit}
@@ -64,8 +54,8 @@ function App() {
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
-          <div className="flex-1 p-6 md:p-8 lg:p-10">
-            <div className="max-w-xl rounded-[28px] bg-white p-8 shadow-sm">
+          <div className="flex-1 overflow-hidden p-4 sm:p-6 lg:p-8 xl:p-10">
+            <div className="mx-auto max-w-3xl rounded-[28px] bg-white p-8 shadow-sm">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
                 Top Bar Test Area
               </p>
