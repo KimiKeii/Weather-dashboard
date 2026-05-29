@@ -1,8 +1,8 @@
 import { useState } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import TodayHighlights from "./components/TodayHighlight.jsx"; 
-import ForecastCard from "./components/ForecastCard.jsx"; 
+import TodayHighlights from "./components/TodayHighlight/TodayHighlight.jsx"; 
+import ForecastCard from "./components/Forecast/ForecastCard.jsx"; 
 import { Wind, Droplets, Eye } from "lucide-react";
 
 function App() {
