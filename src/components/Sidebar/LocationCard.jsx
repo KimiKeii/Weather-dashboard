@@ -5,11 +5,9 @@ export default function LocationCard({ city, isActive, onClick }) {
       className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150
         ${isActive ? "bg-blue-50" : "hover:bg-gray-100"}`}
     >
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-        ${isActive ? "bg-blue-200" : "bg-gray-100"}`}>
-        <i className={`ti ${city.icon} text-base ${isActive ? "text-blue-600" : "text-gray-400"}`}
-          aria-hidden="true"
-        />
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-lg
+        ${isActive ? "bg-blue-100" : "bg-gray-100"}`}>
+        {city.emoji}
       </div>
 
       <div className="flex-1 min-w-0">
