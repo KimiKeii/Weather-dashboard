@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import LocationCard from "./LocationCard";
-import { getWeather, getWeatherEmoji } from "../../api/weather";
+import { getWeather, getWeatherEmoji } from "../../API/weather";
 
 const DEFAULT_CITIES = [
   { id: 1, name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 },
