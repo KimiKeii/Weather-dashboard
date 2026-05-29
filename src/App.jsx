@@ -1,8 +1,7 @@
 import { useState } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import TodayHighlights from "./components/TodayHighlights.jsx"; 
-// FIX: Imported your newly refactored ForecastCard panel wrapper
+import TodayHighlights from "./components/TodayHighlight.jsx"; 
 import ForecastCard from "./components/ForecastCard.jsx"; 
 import { Wind, Droplets, Eye } from "lucide-react";
 
@@ -47,7 +46,7 @@ function App() {
               Close
             </button>
             <Sidebar onCitySelect={handleCitySelect} />
-          </</aside>
+          </aside> {/* FIX: Resolved structural character break here */}
         </div>
 
         {/* Central Workspace Canvas */}
