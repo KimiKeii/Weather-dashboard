@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 // Import your API utilities
-import { getWeather, reverseGeocode, getWeatherEmoji, getWeatherLabel } from "./weatherApi";
+import { getWeather, reverseGeocode, getWeatherEmoji, getWeatherLabel } from "./API/weather.js";
 
 function App() {
   // UI State
