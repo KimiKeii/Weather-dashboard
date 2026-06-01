@@ -46,7 +46,7 @@ function MetricCard({ metric, chartData, latestValue }) {
       )}
 
       <div style={{ position: "relative", overflow: "visible" }}>
-        <ResponsiveContainer width="100%" height={110}>
+        <ResponsiveContainer width="100%" height={220}>
           <LineChart data={chartData} margin={{ top: 6, right: 20, left: -28, bottom: 0 }} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="time" tick={{ fontSize: 8, fill: "#94a3b8" }} interval="preserveStartEnd" />
@@ -65,7 +65,9 @@ function MetricCard({ metric, chartData, latestValue }) {
               <ReferenceDot 
                 x={activePayload.payload?.time} 
                 y={activePayload.value}
-                shape={<CustomDot />}
+                shape={
+                  <circle cx={0} cy={0} r={5} fill={metric.color} stroke="#f70000" strokeWidth={2} />
+                }
               />
             )}
           </LineChart>
@@ -157,7 +159,7 @@ export default function DetailedOutlookModal({ data, unit, cityName, country, on
         )}
 
         {tab === "charts" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 18 }}>
             {METRICS.map(m => <MetricCard key={m.key} metric={m} chartData={chartData} latestValue={latest[m.key]} />)}
           </div>
         )}

@@ -140,7 +140,7 @@ export default function TodayHighlight({ data, hourly }) {
 
               {/* Value */}
               <div className="flex items-end gap-1 mb-5">
-                <span className="text-4xl font-extrabold text-gray-950">{highlight.value}</span>
+                <span className="text-2xl font-extrabold text-gray-950">{highlight.value}</span>
                 <span className="text-sm text-gray-500 pb-1">{highlight.unit}</span>
               </div>
 
