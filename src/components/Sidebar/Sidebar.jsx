@@ -68,7 +68,7 @@ export default function Sidebar({ onCitySelect }) {
           ☁️
         </div>
         <span className="text-lg font-bold text-slate-800">
-          WeatherScope <span className="text-blue-600">Pro</span>
+          Weatherly <span className="text-blue-600"></span>
         </span>
       </div>
 
