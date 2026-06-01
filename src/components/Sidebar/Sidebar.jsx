@@ -65,9 +65,9 @@ export default function Sidebar({ onCitySelect }) {
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl shadow-lg shadow-blue-600/30">
-          <img src="/src/assets/logo.svg" alt="Logo" className="w-full h-full" />
+          <img src="/src/assets/logo.svg" alt="Logo" className="w-7 h-7" />
         </div>
-        <span className="text-2xl font-bold text-slate-800 ">
+        <span className="text-2xl font-bold text-slate-800">
           Weatherly <span className="text-blue-600"></span>
         </span>
       </div>
