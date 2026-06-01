@@ -5,12 +5,14 @@ import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
 import WeatherMap from "./components/WeatherMap/WeatherMap.jsx";
+import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx";
 import { useWeather } from "./hooks/useWeather";
 
 function App() {
   const [unit, setUnit] = useState("C");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showOutlook, setShowOutlook] = useState(false);
 
   const { weatherData, isLoading, error, selectedCity, fetchWeather } = useWeather();
 
@@ -23,6 +25,7 @@ function App() {
 
   const handleCitySelect = (city) => {
     if (sidebarOpen) setSidebarOpen(false);
+    setShowOutlook(false); // return to dashboard on city change
     fetchWeather(city.lat, city.lon, city.name, city.country);
   };
 
@@ -72,29 +75,40 @@ function App() {
             )}
 
             {!isLoading && !error && weatherData && (
-              <div className="flex flex-col gap-6 mx-auto max-w-6xl">
-
-                {/* Top Row: Current Weather & Highlights */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-7">
-                    <CurrentWeather data={weatherData.current} unit={unit} />
+              <>
+                {showOutlook ? (
+                  <DetailedOutlookModal
+                    data={weatherData.hourly}
+                    unit={unit}
+                    cityName={selectedCity?.name}
+                    country={selectedCity?.country}
+                    onClose={() => setShowOutlook(false)}
+                  />
+                ) : (
+                  <div className="flex flex-col gap-6 mx-auto max-w-6xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                      <div className="lg:col-span-7">
+                        <CurrentWeather data={weatherData.current} unit={unit} />
+                      </div>
+                      <div className="lg:col-span-5">
+                        <TodayHighlight data={weatherData.current} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[300px]">
+                      <div className="lg:col-span-7">
+                        <ForecastCard
+                          data={weatherData.daily}
+                          unit={unit}
+                          onOpenOutlook={() => setShowOutlook(true)}
+                        />
+                      </div>
+                      <div className="lg:col-span-5">
+                        <WeatherMap location={selectedCity} />
+                      </div>
+                    </div>
                   </div>
-                  <div className="lg:col-span-5">
-                    <TodayHighlight data={weatherData.current} />
-                  </div>
-                </div>
-
-                {/* Bottom Row: 7-Day Forecast & Map */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[300px]">
-                  <div className="lg:col-span-7">
-                    <ForecastCard data={weatherData.daily} unit={unit} />
-                  </div>
-                  <div className="lg:col-span-5">
-                    <WeatherMap location={selectedCity} />
-                  </div>
-                </div>
-
-              </div>
+                )}
+              </>
             )}
           </div>
         </section>

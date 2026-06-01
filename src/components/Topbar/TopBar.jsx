@@ -74,14 +74,6 @@ function TopBar({
         >
           <RefreshIcon spinning={isRefreshing} />
         </button>
-
-        <div className="h-10 w-10 rounded-xl bg-slate-300 overflow-hidden shadow-sm">
-          <img
-            src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix"
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
-        </div>
       </div>
     </header>
   );

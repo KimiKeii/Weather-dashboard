@@ -20,6 +20,7 @@ export async function getWeather(lat, lon) {
     `${WEATHER_URL}/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,windspeed_10m,relativehumidity_2m,weathercode,visibility,uv_index` +
     `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+    `&hourly=temperature_2m,relative_humidity_2m,surface_pressure,precipitation,wind_speed_10m` +
     `&timezone=auto&forecast_days=7`
   );
   return await res.json();
