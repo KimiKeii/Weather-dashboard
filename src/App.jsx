@@ -86,26 +86,26 @@ function App() {
                   />
                 ) : (
                   <div className="flex flex-col gap-6 mx-auto max-w-6xl">
+
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                      <div className="lg:col-span-7">
+
+                      {/* Left column — stacked */}
+                      <div className="lg:col-span-7 flex flex-col gap-6">
                         <CurrentWeather data={weatherData.current} unit={unit} />
-                      </div>
-                      <div className="lg:col-span-5">
-                        <TodayHighlight data={weatherData.current} />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[300px]">
-                      <div className="lg:col-span-7">
                         <ForecastCard
                           data={weatherData.daily}
                           unit={unit}
                           onOpenOutlook={() => setShowOutlook(true)}
                         />
                       </div>
+
+                      {/* Right column — tall */}
                       <div className="lg:col-span-5">
-                        <WeatherMap location={selectedCity} />
+                        <TodayHighlight data={weatherData.current} hourly={weatherData.hourly} />
                       </div>
+
                     </div>
+
                   </div>
                 )}
               </>
