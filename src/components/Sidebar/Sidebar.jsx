@@ -13,8 +13,11 @@ const DEFAULT_CITIES = [
 export default function Sidebar({ onCitySelect }) {
   const [activeId, setActiveId] = useState(1);
   const [cities, setCities] = useState([]);
+  const [batteryInfo, setBatteryInfo] = useState({ supported: true, level: null, charging: null });
 
   useEffect(() => {
+    let batteryCleanup;
+
     async function loadTemps() {
       const updated = await Promise.all(
         DEFAULT_CITIES.map(async (city) => {
@@ -27,7 +30,35 @@ export default function Sidebar({ onCitySelect }) {
       setCities(updated);
       onCitySelect(updated[0]);
     }
+
+    async function initBattery() {
+      if (navigator?.getBattery) {
+        const battery = await navigator.getBattery();
+        const update = () => {
+          setBatteryInfo({
+            supported: true,
+            level: Math.round(battery.level * 100),
+            charging: battery.charging,
+          });
+        };
+        update();
+        battery.addEventListener("levelchange", update);
+        battery.addEventListener("chargingchange", update);
+        batteryCleanup = () => {
+          battery.removeEventListener("levelchange", update);
+          battery.removeEventListener("chargingchange", update);
+        };
+      } else {
+        setBatteryInfo({ supported: false, level: null, charging: null });
+      }
+    }
+
     loadTemps();
+    initBattery();
+
+    return () => {
+      if (typeof batteryCleanup === "function") batteryCleanup();
+    };
   }, []);
 
   function handleSelect(city) {
@@ -74,19 +105,31 @@ export default function Sidebar({ onCitySelect }) {
 
       <div className="mb-6"><SearchBar onCitySelect={handleNewCity} /></div>
 
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Saved locations</p>
-
-      <div className="flex flex-col gap-2 overflow-y-auto flex-1 pb-4">
-        {cities.map((city) => (
-          <LocationCard
-            key={city.id}
-            city={city}
-            isActive={activeId === city.id}
-            onClick={() => handleSelect(city)}
-            onDelete={handleDelete}
-          />
-        ))}
+      <div className="flex flex-col gap-4 h-1/2">
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Saved locations</p>
+        <div className="flex flex-col gap-2 overflow-y-auto flex-1 pb-4">
+          {cities.map((city) => (
+            <LocationCard
+              key={city.id}
+              city={city}
+              isActive={activeId === city.id}
+              onClick={() => handleSelect(city)}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
       </div>
+
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+        <h3 className="text-sm font-semibold text-slate-700 mb-2">Device status</h3>
+        <p className="text-sm text-slate-600">
+          {batteryInfo.supported
+            ? `Battery level is ${batteryInfo.level ?? "--"}% and the device is currently ${batteryInfo.charging ? "charging" : "not charging"}.`
+            : "Battery status is not available for this device."}
+        </p>
+      </div>
+
+      <div className="text-xs text-slate-400 text-center mt-4">© 2024 Weatherly. All rights reserved.</div>
     </aside>
   );
 }
