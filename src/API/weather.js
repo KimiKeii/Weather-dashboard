@@ -28,13 +28,15 @@ export async function getWeather(lat, lon) {
 
 export async function reverseGeocode(lat, lon) {
   const res = await fetch(
-    `${GEO_URL}/reverse?lat=${lat}&lon=${lon}&format=json`,
+    `${GEO_URL}/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`,
     { headers: { "Accept-Language": "en" } }
   );
   const data = await res.json();
   return {
-    name: data.address.city || data.address.town || data.address.village || "Unknown",
+    city: data.address.city || data.address.town || data.address.village || data.address.county || data.address.state || "Unknown",
     country: data.address.country || "",
+    road: data.address.road || data.address.pedestrian || data.address.cycleway || data.address.footway || data.address.path || "",
+    neighbourhood: data.address.neighbourhood || data.address.suburb || data.address.quarter || "",
   };
 }
 

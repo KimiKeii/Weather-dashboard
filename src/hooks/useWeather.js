@@ -1,8 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { getWeather, reverseGeocode } from "../API/weather";
 
+const DEFAULT_CITY = {
+  name: "London",
+  country: "United Kingdom",
+  lat: 51.5074,
+  lon: -0.1278,
+};
+
 export function useWeather() {
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
