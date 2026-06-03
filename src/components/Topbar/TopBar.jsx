@@ -57,7 +57,7 @@ function TopBar({ cityName = "", countryCode = "", date = new Date(), unit = "C"
           ) : (
             <>
               <p className="truncate text-2xl font-bold tracking-tight text-slate-900 leading-none">
-                {cityName}, {countryCode}
+                {cityName}{countryCode ? `, ${countryCode}` : ""}
               </p>
               <p className="text-sm font-semibold text-slate-700 mt-2 leading-none">
                 {formatTopBarDate(date)}

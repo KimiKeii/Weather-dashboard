@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getWeather, reverseGeocode } from "../API/weather";
 
 const DEFAULT_CITY = {
-  name: "",
+  name: "LOADING...",
   country: "",
 };
 
