@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
-import WeatherMap from "./components/WeatherMap/WeatherMap.jsx";
 import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx";
 import { useWeather } from "./hooks/useWeather";
 
