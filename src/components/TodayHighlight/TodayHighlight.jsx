@@ -56,15 +56,6 @@ export default function TodayHighlight({ data, hourly }) {
       iconColor: 'text-blue-400',
     },
     {
-      icon: Sun,
-      title: 'UV Index',
-      value: data.uv_index,
-      unit: 'uv',
-      status: data.uv_index > 5 ? 'High UV' : 'Moderate UV',
-      statusType: 'text',
-      iconColor: 'text-yellow-500',
-    },
-    {
       icon: Eye,
       title: 'Visibility',
       value: (data.visibility / 1000).toFixed(1),
@@ -105,6 +96,15 @@ export default function TodayHighlight({ data, hourly }) {
         : '—',
       statusType: 'text',
       iconColor: 'text-cyan-400',
+    },
+    {
+      icon: Sun,
+      title: 'UV Index',
+      value: data.uv_index,
+      unit: 'uv',
+      status: data.uv_index > 5 ? 'High UV' : 'Moderate UV',
+      statusType: 'text',
+      iconColor: 'text-yellow-500',
     },
     {
       icon: Flame,
