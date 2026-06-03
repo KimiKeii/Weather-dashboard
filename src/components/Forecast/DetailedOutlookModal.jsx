@@ -7,6 +7,20 @@ function MetricCard({ metric, chartData, latestValue }) {
   const hi = metric.key === "heat_index" ? heatLabel(latestValue) : null;
   const { activePayload, onMouseMove, onMouseLeave } = useChartHover();
 
+  const values = chartData
+    .map((item) => item[metric.key])
+    .filter((value) => typeof value === "number" && !Number.isNaN(value));
+  const minValue = values.length ? Math.min(...values) : null;
+  const maxValue = values.length ? Math.max(...values) : null;
+  const avgValue = values.length ? +(values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1) : null;
+  const trendValue = values.length > 1
+    ? values[values.length - 1] > values[0]
+      ? "Upward"
+      : values[values.length - 1] < values[0]
+        ? "Downward"
+        : "Stable"
+    : "Stable";
+
   const CustomDot = (props) => {
     const { cx, cy } = props;
     return (
@@ -29,14 +43,27 @@ function MetricCard({ metric, chartData, latestValue }) {
 
   return (
     <div style={{ background: "#fff", borderRadius: 16, padding: "16px 18px", border: "1px solid #e8edf3", boxShadow: "0 2px 12px rgba(15,23,42,.06)" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ fontSize: 15 }}>{metric.icon}</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b", letterSpacing: ".04em", textTransform: "uppercase" }}>{metric.label}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "nowrap", marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0, overflow: "hidden" }}>
+          <span style={{ fontSize: 15, flexShrink: 0 }}>{metric.icon}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b", letterSpacing: ".04em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{metric.label}</span>
         </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: metric.color, background: metric.color + "15", borderRadius: 20, padding: "3px 11px", border: `1.5px solid ${metric.color}30` }}>
+        <div style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, color: metric.color, background: metric.color + "15", borderRadius: 20, padding: "3px 11px", border: `1.5px solid ${metric.color}30`, whiteSpace: "nowrap" }}>
           {latestValue ?? "—"} {metric.unit}
         </div>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+        {[
+          { label: "Min", value: minValue },
+          { label: "Max", value: maxValue },
+          { label: "Avg", value: avgValue },
+          { label: "Trend", value: trendValue },
+        ].map((stat) => (
+          <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "#f8fafc", border: "1px solid #e8edf0", borderRadius: 16, padding: "5px 10px", fontSize: 12, color: "#475569" }}>
+            <span style={{ fontWeight: 700, color: "#334155" }}>{stat.label}</span>
+            <span>{stat.value ?? "—"}{stat.label !== "Trend" ? metric.unit : ""}</span>
+          </div>
+        ))}
       </div>
 
       {hi && (
