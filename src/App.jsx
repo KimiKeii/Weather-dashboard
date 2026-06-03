@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
+import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
@@ -7,7 +8,7 @@ import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx
 import DeviceInfo from "./components/DeviceInfo/DeviceInfo.jsx";
 import { useWeather } from "./hooks/useWeather";
 
-const FALLBACK = { name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 };
+const FALLBACK = { name: "Dubai", country: "UAE", lat: 25.2048, lon: 55.2708  };
 
 async function reverseGeocode(lat, lon) {
   const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
@@ -29,29 +30,9 @@ function App() {
   const { weatherData, isLoading, error, selectedCity, fetchWeather } = useWeather();
 
   useEffect(() => {
-    if (!navigator?.geolocation) {
-      setLocationStatus("denied");
-      fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async ({ coords: { latitude: lat, longitude: lon } }) => {
-        setLocationStatus("granted");
-        try {
-          const city = await reverseGeocode(lat, lon);
-          fetchWeather(city.lat, city.lon, city.name, city.country);
-        } catch {
-          fetchWeather(lat, lon, "My Location", "");
-        }
-      },
-      () => {
-        setLocationStatus("denied");
-        fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
-      },
-      { timeout: 8000 }
-    );
-  }, []);
+    setLocationStatus("granted");
+    fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
+  }, [fetchWeather]); 
 
   async function handleRefresh() {
     if (!selectedCity) return;
@@ -63,6 +44,8 @@ function App() {
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-center">
       <section className="mx-auto flex w-full max-w-[1400px] h-[90vh] min-h-[800px] flex-col overflow-hidden rounded-[40px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
+
+        
 
         {/* Main Content */}
         <section className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
