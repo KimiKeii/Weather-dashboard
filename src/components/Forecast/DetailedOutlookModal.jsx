@@ -18,8 +18,8 @@ function MetricCard({ metric, chartData, latestValue }) {
     if (!active || !payload?.length) return null;
     const point = payload[0];
     return (
-      <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14, padding: "10px 12px", boxShadow: "0 8px 24px rgba(15,23,42,.12)", fontSize: 12, minWidth: 110 }}>
-        <div style={{ color: "#94a3b8", fontSize: 10, marginBottom: 4 }}>{point.payload?.time}</div>
+      <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14, padding: "10px 12px", boxShadow: "0 8px 24px rgba(15,23,42,.12)", fontSize: 14, minWidth: 110 }}>
+        <div style={{ color: "#94a3b8", fontSize: 12, marginBottom: 4 }}>{point.payload?.time}</div>
         <div style={{ fontWeight: 700, color: "#0f172a" }}>
           {point.value} <span style={{ color: "#94a3b8", fontWeight: 400 }}>{metric.unit}</span>
         </div>
@@ -32,9 +32,9 @@ function MetricCard({ metric, chartData, latestValue }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
           <span style={{ fontSize: 15 }}>{metric.icon}</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: ".04em", textTransform: "uppercase" }}>{metric.label}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b", letterSpacing: ".04em", textTransform: "uppercase" }}>{metric.label}</span>
         </div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: metric.color, background: metric.color + "15", borderRadius: 20, padding: "3px 11px", border: `1.5px solid ${metric.color}30` }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: metric.color, background: metric.color + "15", borderRadius: 20, padding: "3px 11px", border: `1.5px solid ${metric.color}30` }}>
           {latestValue ?? "—"} {metric.unit}
         </div>
       </div>
@@ -49,8 +49,8 @@ function MetricCard({ metric, chartData, latestValue }) {
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={chartData} margin={{ top: 6, right: 20, left: -28, bottom: 0 }} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="time" tick={{ fontSize: 8, fill: "#94a3b8" }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 8, fill: "#94a3b8" }} />
+            <XAxis dataKey="time" tick={{ fontSize: 11, fill: "#94a3b8" }} interval="preserveStartEnd" />
+            <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} />
             <Tooltip content={<TooltipContent />} cursor={{ stroke: "#cbd5e1", strokeWidth: 1, strokeDasharray: "4 4" }} />
             <Line
               type="monotone"
@@ -103,8 +103,8 @@ export default function DetailedOutlookModal({ data, unit, cityName, country, on
             { label: "Wind",     value: `${latest.wind_speed_10m ?? "—"} km/h`,   color: "#10b981" },
           ].map(p => (
             <div key={p.label} style={{ background: "#fff", border: "1px solid #e8edf3", borderRadius: 12, padding: "6px 14px", textAlign: "center", boxShadow: "0 2px 8px rgba(15,23,42,.05)" }}>
-              <div style={{ fontSize: 10, color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".05em" }}>{p.label}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{p.value}</div>
+              <div style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".05em" }}>{p.label}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: p.color }}>{p.value}</div>
             </div>
           ))}
         </div>
@@ -113,7 +113,7 @@ export default function DetailedOutlookModal({ data, unit, cityName, country, on
       {/* Tabs */}
       <div style={{ display: "flex", gap: 4, borderBottom: "2px solid #f1f5f9", marginBottom: 20 }}>
         {[{ id: "table", label: "📋 Tabulated Data" }, { id: "charts", label: "📈 Graphical View" }].map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 20px", border: "none", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: tab === t.id ? "#2563eb" : "#94a3b8", borderBottom: `2.5px solid ${tab === t.id ? "#2563eb" : "transparent"}`, marginBottom: -2, transition: "color .15s, border-color .15s", fontFamily: "inherit" }}>
+          <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 20px", border: "none", background: "none", cursor: "pointer", fontSize: 15, fontWeight: 700, color: tab === t.id ? "#2563eb" : "#94a3b8", borderBottom: `2.5px solid ${tab === t.id ? "#2563eb" : "transparent"}`, marginBottom: -2, transition: "color .15s, border-color .15s", fontFamily: "inherit" }}>
             {t.label}
           </button>
         ))}
@@ -124,11 +124,11 @@ export default function DetailedOutlookModal({ data, unit, cityName, country, on
         {tab === "table" && (
           <div style={{ borderRadius: 16, border: "1px solid #e8edf3", overflow: "hidden" }}>
             <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
                 <thead>
                   <tr style={{ background: "#f8fafc" }}>
                     {["Date & Time", "Air Temp (°C)", "Humidity (%)", "Pressure (hPa)", "Rain (mm)", "Wind (km/h)", "Heat Index"].map(h => (
-                      <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontSize: 10, fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#94a3b8", borderBottom: "1px solid #e8edf3", whiteSpace: "nowrap" }}>{h}</th>
+                      <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#94a3b8", borderBottom: "1px solid #e8edf3", whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -141,13 +141,13 @@ export default function DetailedOutlookModal({ data, unit, cityName, country, on
                       <tr key={i} style={{ borderBottom: "1px solid #f8fafc", transition: "background .1s" }}
                         onMouseEnter={e => e.currentTarget.style.background = "#f8fbff"}
                         onMouseLeave={e => e.currentTarget.style.background = ""}>
-                        <td style={{ padding: "9px 14px", color: "#64748b", fontSize: 11, whiteSpace: "nowrap" }}>{fmtDate(r.time)}</td>
+                        <td style={{ padding: "9px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(r.time)}</td>
                         {[r.temperature_2m, r.relative_humidity_2m, r.surface_pressure, r.precipitation, r.wind_speed_10m].map((val, j) => (
-                          <td key={j} style={{ padding: "9px 14px", fontFamily: "'DM Mono', monospace", fontWeight: 500, color: "#0f172a", whiteSpace: "nowrap" }}>{val ?? "—"}</td>
+                          <td key={j} style={{ padding: "9px 14px", fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: 13, color: "#0f172a", whiteSpace: "nowrap" }}>{val ?? "—"}</td>
                         ))}
                         <td style={{ padding: "9px 14px", whiteSpace: "nowrap" }}>
-                          <span style={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, color: "#0f172a" }}>{r.heat_index ?? "—"}</span>
-                          {hiLbl && <span style={{ marginLeft: 7, fontSize: 10, fontWeight: 700, color: hiLbl.color, background: hiLbl.bg, borderRadius: 20, padding: "2px 8px" }}>{hiLbl.text}</span>}
+                          <span style={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: 13, color: "#0f172a" }}>{r.heat_index ?? "—"}</span>
+                          {hiLbl && <span style={{ marginLeft: 7, fontSize: 12, fontWeight: 700, color: hiLbl.color, background: hiLbl.bg, borderRadius: 20, padding: "2px 8px" }}>{hiLbl.text}</span>}
                         </td>
                       </tr>
                     );
