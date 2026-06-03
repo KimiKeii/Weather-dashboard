@@ -2,10 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { getWeather, reverseGeocode } from "../API/weather";
 
 const DEFAULT_CITY = {
-  name: "London",
-  country: "United Kingdom",
-  lat: 51.5074,
-  lon: -0.1278,
+  name: "",
+  country: "",
 };
 
 export function useWeather() {
@@ -27,11 +25,5 @@ export function useWeather() {
       setIsLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    // Default to London — skip geolocation to avoid CORS issues with Nominatim
-    fetchWeather(51.5074, -0.1278, "London", "United Kingdom");
-  }, [fetchWeather]);
-
   return { weatherData, isLoading, error, selectedCity, fetchWeather };
 }
