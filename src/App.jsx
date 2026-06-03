@@ -1,20 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TopBar from "./components/Topbar/TopBar.jsx";
-import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
 import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx";
 import { useWeather } from "./hooks/useWeather";
 
+const FALLBACK = { name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 };
+
+async function reverseGeocode(lat, lon) {
+  const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+  const d = await res.json();
+  return {
+    name: d.city || d.locality || d.principalSubdivision || "My Location",
+    country: (d.countryName || "Unknown").replace(/\s*\(.*?\)/g, "").trim(),
+    lat, lon,
+  };
+}
+
 function App() {
   const [unit, setUnit] = useState("C");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showOutlook, setShowOutlook] = useState(false);
-  const [locationStatus, setLocationStatus] = useState("loading"); // 👈 lifted up
+  const [locationStatus, setLocationStatus] = useState("loading");
 
   const { weatherData, isLoading, error, selectedCity, fetchWeather } = useWeather();
+
+  useEffect(() => {
+    if (!navigator?.geolocation) {
+      setLocationStatus("denied");
+      fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords: { latitude: lat, longitude: lon } }) => {
+        setLocationStatus("granted");
+        try {
+          const city = await reverseGeocode(lat, lon);
+          fetchWeather(city.lat, city.lon, city.name, city.country);
+        } catch {
+          fetchWeather(lat, lon, "My Location", "");
+        }
+      },
+      () => {
+        setLocationStatus("denied");
+        fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
+      },
+      { timeout: 8000 }
+    );
+  }, []);
 
   async function handleRefresh() {
     if (!selectedCity) return;
@@ -23,29 +59,9 @@ function App() {
     setIsRefreshing(false);
   }
 
-  function handleCitySelect(city) {
-    if (sidebarOpen) setSidebarOpen(false);
-    setShowOutlook(false);
-    fetchWeather(city.lat, city.lon, city.name, city.country);
-  }
-
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-center">
       <section className="mx-auto flex w-full max-w-[1400px] h-[90vh] min-h-[800px] flex-col overflow-hidden rounded-[40px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
-
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block lg:w-[280px] lg:shrink-0 bg-white">
-          <Sidebar onCitySelect={handleCitySelect} onLocationStatusChange={setLocationStatus} />
-        </div>
-
-        {/* Mobile Sidebar Overlay */}
-        <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
-          <div className="absolute inset-0 bg-slate-950/40" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative z-10 h-screen w-[85%] max-w-sm bg-white p-6 shadow-2xl overflow-hidden">
-            <button onClick={() => setSidebarOpen(false)} className="mb-5 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600">Close</button>
-            <Sidebar onCitySelect={handleCitySelect} onLocationStatusChange={setLocationStatus} />
-          </aside>
-        </div>
 
         {/* Main Content */}
         <section className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
