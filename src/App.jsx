@@ -4,6 +4,7 @@ import CurrentWeather from "./components/CurrentWeather/CurrentWeather.jsx";
 import TodayHighlight from "./components/TodayHighlight/TodayHighlight.jsx";
 import ForecastCard from "./components/Forecast/ForecastCard.jsx";
 import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx";
+import DeviceInfo from "./components/DeviceInfo/DeviceInfo.jsx";
 import { useWeather } from "./hooks/useWeather";
 
 const FALLBACK = { name: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278 };
@@ -102,6 +103,7 @@ function App() {
                   <div className="flex flex-col gap-6 mx-auto max-w-6xl">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                       <div className="lg:col-span-7 flex flex-col gap-6">
+                        <DeviceInfo cityName={selectedCity?.name} countryCode={selectedCity?.country} />
                         <CurrentWeather data={weatherData.current} unit={unit} />
                         <ForecastCard data={weatherData.daily} unit={unit} onOpenOutlook={() => setShowOutlook(true)} />
                       </div>
