@@ -78,44 +78,6 @@ export default function TodayHighlight({ data, hourly }) {
       statusType: 'text',
       iconColor: 'text-cyan-400',
     },
-    {
-      icon: Wind,
-      title: 'Wind Status',
-      value: data.windspeed_10m,
-      unit: 'km/h',
-      status: 'Current',
-      statusType: 'time',
-      iconColor: 'text-gray-400',
-    },
-    {
-      icon: Eye,
-      title: 'Visibility',
-      value: (data.visibility / 1000).toFixed(1),
-      unit: 'km',
-      status: 'Current',
-      statusType: 'time',
-      iconColor: 'text-gray-400',
-    },
-    {
-      icon: Gauge,
-      title: 'Air Pressure',
-      value: latestPres ?? '—',
-      unit: 'hPa',
-      status: latestPres != null
-        ? latestPres > 1013 ? 'High Pressure' : 'Low Pressure'
-        : '—',
-      statusType: 'text',
-      iconColor: 'text-purple-400',
-    },
-    {
-      icon: Sun,
-      title: 'UV Index',
-      value: data.uv_index,
-      unit: 'uv',
-      status: data.uv_index > 5 ? 'High UV' : 'Moderate UV',
-      statusType: 'text',
-      iconColor: 'text-yellow-500',
-    },
   ];
 
   const dotTitles = ['Humidity', 'UV Index', 'Air Temperature', 'Air Pressure', 'Rain Gauge', 'Heat Index'];
