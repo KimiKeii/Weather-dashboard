@@ -4,13 +4,14 @@ import { reverseGeocode } from "../../API/weather";
 function MenuIcon() { return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function RefreshIcon({ spinning }) { return <svg className={spinning ? "animate-spin" : ""} width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 11A8.1 8.1 0 0 0 4.5 8.5M4 5V9H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 13A8.1 8.1 0 0 0 19.5 15.5M20 19V15H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
 
-function formatTopBarDate(date) {
-  return (date ? new Date(date) : new Date()).toLocaleDateString("en-US", {
-    weekday: "long", day: "2-digit", month: "short", year: "numeric",
-  });
+// hardcoded fallback location (Makati City, Philippines) in case geolocation fails or is denied
+const BUILDING_ADDRESS = "Unit 6A, Salamin Building, 197 Salcedo, Legaspi Village, Makati City, 1229 Metro Manila";
+
+function formatTopBarAddress(address) {
+  return address || BUILDING_ADDRESS;
 }
 
-function TopBar({ cityName = "", countryCode = "", date = new Date(), unit = "C", onUnitChange, onRefresh, isRefreshing = false, onOpenSidebar, isLocating = false }) {
+function TopBar({ cityName = "", countryCode = "", unit = "C", onUnitChange, onRefresh, isRefreshing = false, onOpenSidebar, isLocating = false }) {
   const [deviceLocation, setDeviceLocation] = useState({ status: "Locating device..." });
 
   useEffect(() => {
@@ -60,7 +61,7 @@ function TopBar({ cityName = "", countryCode = "", date = new Date(), unit = "C"
                 {cityName}{countryCode ? `, ${countryCode}` : ""}
               </p>
               <p className="text-sm font-semibold text-slate-700 mt-2 leading-none">
-                {formatTopBarDate(date)}
+                {formatTopBarAddress("")}
               </p>
             </>
           )}

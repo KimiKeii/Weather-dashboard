@@ -8,7 +8,7 @@ import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx
 import DeviceInfo from "./components/DeviceInfo/DeviceInfo.jsx";
 import { useWeather } from "./hooks/useWeather";
 
-const FALLBACK = { name: "Dubai", country: "UAE", lat: 25.2048, lon: 55.2708  };
+const FALLBACK = { name: "Salamin Bldg", country: "Unit 6A", lat: 25.2048, lon: 55.2708  };
 
 async function reverseGeocode(lat, lon) {
   const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
@@ -53,7 +53,6 @@ function App() {
             cityName={selectedCity?.name}
             countryCode={selectedCity?.country}
             isLocating={locationStatus === "loading"}
-            date={new Date()}
             unit={unit}
             onUnitChange={setUnit}
             onRefresh={handleRefresh}
