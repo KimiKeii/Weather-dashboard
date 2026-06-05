@@ -37,34 +37,7 @@ export default function TodayHighlight({ data, hourly }) {
   const hiLabel    = heatLabel(heatIndex);
 
   const highlights = [
-    {
-      icon: Wind,
-      title: 'Wind Status',
-      value: data.windspeed_10m,
-      unit: 'km/h',
-      status: 'Current',
-      statusType: 'time',
-      iconColor: 'text-gray-400',
-    },
-    {
-      icon: Droplets,
-      title: 'Humidity',
-      value: data.relativehumidity_2m,
-      unit: '%',
-      status: data.relativehumidity_2m > 60 ? 'High Humidity' : 'Good',
-      statusType: 'text',
-      iconColor: 'text-blue-400',
-    },
-    {
-      icon: Eye,
-      title: 'Visibility',
-      value: (data.visibility / 1000).toFixed(1),
-      unit: 'km',
-      status: 'Current',
-      statusType: 'time',
-      iconColor: 'text-gray-400',
-    },
-    {
+     {
       icon: Thermometer,
       title: 'Air Temperature',
       value: latestTemp ?? '—',
@@ -76,15 +49,23 @@ export default function TodayHighlight({ data, hourly }) {
       iconColor: 'text-orange-400',
     },
     {
-      icon: Gauge,
-      title: 'Air Pressure',
-      value: latestPres ?? '—',
-      unit: 'hPa',
-      status: latestPres != null
-        ? latestPres > 1013 ? 'High Pressure' : 'Low Pressure'
-        : '—',
+      icon: Droplets,
+      title: 'Humidity',
+      value: data.relativehumidity_2m,
+      unit: '%',
+      status: data.relativehumidity_2m > 60 ? 'High Humidity' : 'Good',
       statusType: 'text',
-      iconColor: 'text-purple-400',
+      iconColor: 'text-blue-400',
+    },
+    {
+      icon: Flame,
+      title: 'Heat Index',
+      value: heatIndex ?? '—',
+      unit: '°C',
+      status: hiLabel.text,
+      statusType: 'text',
+      statusColor: hiLabel.color,
+      iconColor: 'text-red-400',
     },
     {
       icon: CloudRain,
@@ -98,6 +79,35 @@ export default function TodayHighlight({ data, hourly }) {
       iconColor: 'text-cyan-400',
     },
     {
+      icon: Wind,
+      title: 'Wind Status',
+      value: data.windspeed_10m,
+      unit: 'km/h',
+      status: 'Current',
+      statusType: 'time',
+      iconColor: 'text-gray-400',
+    },
+    {
+      icon: Eye,
+      title: 'Visibility',
+      value: (data.visibility / 1000).toFixed(1),
+      unit: 'km',
+      status: 'Current',
+      statusType: 'time',
+      iconColor: 'text-gray-400',
+    },
+    {
+      icon: Gauge,
+      title: 'Air Pressure',
+      value: latestPres ?? '—',
+      unit: 'hPa',
+      status: latestPres != null
+        ? latestPres > 1013 ? 'High Pressure' : 'Low Pressure'
+        : '—',
+      statusType: 'text',
+      iconColor: 'text-purple-400',
+    },
+    {
       icon: Sun,
       title: 'UV Index',
       value: data.uv_index,
@@ -105,16 +115,6 @@ export default function TodayHighlight({ data, hourly }) {
       status: data.uv_index > 5 ? 'High UV' : 'Moderate UV',
       statusType: 'text',
       iconColor: 'text-yellow-500',
-    },
-    {
-      icon: Flame,
-      title: 'Heat Index',
-      value: heatIndex ?? '—',
-      unit: '°C',
-      status: hiLabel.text,
-      statusType: 'text',
-      statusColor: hiLabel.color,
-      iconColor: 'text-red-400',
     },
   ];
 

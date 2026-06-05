@@ -50,11 +50,21 @@ export default function CurrentWeather({ data, unit }) {
   return (
     <div className="bg-white rounded-[32px] p-8 shadow-sm flex flex-col justify-between h-full relative overflow-hidden">
       {/* Top Tag */}
-      <div>
-        <span className="inline-block bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg">
-          Current Weather
-        </span>
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <span className="inline-block bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg">
+        Current Weather
+      </span>
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2">
+          <span className="text-blue-500 font-bold text-lg">≈</span>
+          <span className="text-sm font-semibold text-slate-700">{data.windspeed_10m} km/h</span>
+        </div>
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2">
+          <span className="text-blue-500 font-bold text-lg">💧</span>
+          <span className="text-sm font-semibold text-slate-700">{data.relativehumidity_2m}%</span>
+        </div>
       </div>
+    </div>
 
       {/* Center Content: Temp & Status */}
       <div className="mt-8 z-10 relative">
@@ -91,16 +101,8 @@ export default function CurrentWeather({ data, unit }) {
         </div>
       </div>
 
-      {/* Bottom Pills */}
-      <div className="mt-8 flex gap-3 z-10 relative">
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2">
-          <span className="text-blue-500 font-bold text-lg">≈</span>
-          <span className="text-sm font-semibold text-slate-700">{data.windspeed_10m} km/h</span>
-        </div>
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2">
-          <span className="text-blue-500 font-bold text-lg">💧</span>
-          <span className="text-sm font-semibold text-slate-700">{data.relativehumidity_2m}%</span>
-        </div>
+      <div className="mt-6 text-sm text-slate-500">
+       
       </div>
 
       {/* Huge Background Icon with Glow */}
