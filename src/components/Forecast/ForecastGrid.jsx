@@ -3,7 +3,7 @@ import { getWeatherEmoji, displayTemp } from "../../API/weather";
 
 export default function ForecastGrid({ data, unit }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 h-full">
+    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 h-full min-h-[200px]">
       {data.time.map((time, index) => {
         // Assume index 0 is today/active
         const isActive = index === 0;

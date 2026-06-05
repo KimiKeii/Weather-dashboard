@@ -3,8 +3,8 @@ import ForecastGrid from "./ForecastGrid.jsx";
 
 export default function ForecastCard({ data, unit, onOpenOutlook }) {
   return (
-    <div className="bg-transparent flex flex-col">
-      <div className="mb-6 flex items-center justify-between">
+<div className="bg-transparent flex flex-col h-full w-full min-h-[200px]">
+      <div className=" mb-6 flex items-center justify-between">
         <h3 className="text-xl font-bold text-slate-800">7-Day Forecast</h3>
         <button
           onClick={onOpenOutlook}

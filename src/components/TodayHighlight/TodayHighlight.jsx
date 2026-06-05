@@ -83,7 +83,7 @@ export default function TodayHighlight({ data, hourly }) {
   const dotTitles = ['Humidity', 'UV Index', 'Air Temperature', 'Air Pressure', 'Rain Gauge', 'Heat Index'];
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm h-full w-full">
+    <div className="bg-white rounded-3xl p-8 shadow-sm h-full min-h-[550px] w-full">
       <h3 className="text-xl font-bold text-gray-800 mb-8">Today's Highlight</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

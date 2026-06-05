@@ -43,7 +43,7 @@ function App() {
 
   return (
     <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-center">
-      <section className="mx-auto flex w-full max-w-[1400px] h-[90vh] min-h-[800px] flex-col overflow-hidden rounded-[40px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
+      <section className="mx-auto flex w-full max-w-[1400px] h-[80vh] min-h-[80px] flex-col overflow-hidden rounded-[40px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
 
         
 
@@ -60,7 +60,7 @@ function App() {
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
-          <div className="flex-1 overflow-y-auto p-6 pb-10 lg:p-8 lg:pb-10 bg-[#f5f7fb]">
+          <div className="flex-1 p-6 pb-10 lg:p-8 lg:pb-10 bg-[#f5f7fb]">
             {isLoading && (
               <div className="text-center font-semibold text-slate-400 py-20">
                 Fetching the latest weather...
@@ -83,12 +83,12 @@ function App() {
                   />
                 ) : (
                   <div className="flex flex-col gap-6 mx-auto max-w-6xl">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                      <div className="lg:col-span-7 flex flex-col gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                      <div className="lg:col-span-7  flex flex-col gap-6">
                         <CurrentWeather data={weatherData.current} unit={unit} />
                         <ForecastCard data={weatherData.daily} unit={unit} onOpenOutlook={() => setShowOutlook(true)} />
                       </div>
-                      <div className="lg:col-span-5 flex flex-col gap-6">
+                      <div className="lg:col-span-5 lg:row-span-5 flex flex-col gap-6">
                         <TodayHighlight data={weatherData.current} hourly={weatherData.hourly} />
                         <DeviceInfo cityName={selectedCity?.name} countryCode={selectedCity?.country} />
                       </div>

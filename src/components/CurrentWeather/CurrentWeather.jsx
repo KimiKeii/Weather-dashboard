@@ -148,10 +148,10 @@ export default function CurrentWeather({ data, unit }) {
         }
       `}</style>
 
-      <div
-        className="rounded-[32px] shadow-sm flex flex-col justify-between relative overflow-hidden"
-        style={{ ...style, minHeight: "340px", padding: "28px 32px 32px" }}
-      >
+<div
+  className="rounded-[32px] shadow-sm flex flex-col justify-between relative overflow-hidden h-full w-full"
+  style={{ ...style, minHeight: "420px", height: "100%", padding: "28px 32px 32px" }}
+>
         {/* Background effects */}
         {isRainy   && <Drops count={28} theme={theme} />}
         {isSnowy   && <Drops count={22} theme="snowy" />}
@@ -193,7 +193,7 @@ export default function CurrentWeather({ data, unit }) {
           <div className="relative inline-block">
             <span
               className={`font-black tracking-tighter leading-none select-none ${isThunder ? t.tempColor : "text-slate-900"}`}
-              style={{ fontSize: "clamp(140px, 22vw, 280px)", display: "block", lineHeight: 0.85 }}
+              style={{ fontSize: "clamp(140px, 22vw, 160px)", display: "block", lineHeight: 0.85 }}
             >
               {displayTempValue}°
             </span>

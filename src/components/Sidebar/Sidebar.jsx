@@ -4,7 +4,10 @@ import LocationCard from "./LocationCard";
 import { getWeather, getWeatherEmoji } from "../../API/weather";
 
 const FALLBACK_CITIES = [
-  { id: 1, name: "Makati", country: "Philippines", lat: 14.5547, lon: 121.0244},
+  { id: 1, name: "Makati", country: "Philippines", lat: 25.204, lon: 55.270},
+  { id: 2, name: "New York", country: "USA", lat: 40.7128, lon: -74.0060 },
+  { id: 3, name: "London", country: "UK", lat: 51.5074, lon: -0.1278 },
+  { id: 4, name: "Tokyo", country: "Japan", lat: 35.6762, lon: 139.6503 },  
 ];
 
 async function enrichCity(city) {
