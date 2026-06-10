@@ -8,7 +8,7 @@ import DetailedOutlookModal from "./components/Forecast/DetailedOutlookModal.jsx
 import DeviceInfo from "./components/DeviceInfo/DeviceInfo.jsx";
 import { useWeather } from "./hooks/useWeather";
 
-const FALLBACK = { name: "Salamin Bldg", country: "Unit 6A", lat: 14.5547, lon: 121.0244 };
+const FALLBACK = { name: "Salamin Bldg", country: "", lat: 14.5547, lon: 121.0244 };
 
 async function reverseGeocode(lat, lon) {
   const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
@@ -27,12 +27,41 @@ function App() {
   const [showOutlook, setShowOutlook] = useState(false);
   const [locationStatus, setLocationStatus] = useState("loading");
 
+  // Panel Resizing States
+  const [sidebarWidth, setSidebarWidth] = useState(280); // Default width in pixels
+  const [isDragging, setIsDragging] = useState(false);
+
   const { weatherData, isLoading, error, selectedCity, fetchWeather } = useWeather();
 
   useEffect(() => {
     setLocationStatus("granted");
     fetchWeather(FALLBACK.lat, FALLBACK.lon, FALLBACK.name, FALLBACK.country);
-  }, [fetchWeather]); 
+  }, [fetchWeather]);
+
+  // Handle Drag/Resize Engine
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      // Enforce min width (200px) and max width (500px) boundaries
+      if (e.clientX > 200 && e.clientX < 500) {
+        setSidebarWidth(e.clientX);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
 
   async function handleRefresh() {
     if (!selectedCity) return;
@@ -42,12 +71,32 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-[#d8d8d8] px-4 py-6 text-slate-900 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-center">
-      <section className="mx-auto flex w-full max-w-[1400px] h-[80vh] min-h-[80px] flex-col overflow-hidden rounded-[40px] bg-[#f5f7fb] shadow-2xl lg:flex-row">
-
+    /* 1. Outer Container: Locked to exactly 100% viewport width & height */
+    <main className="h-screen w-screen bg-[#d8d8d8] text-slate-900 overflow-hidden flex items-center justify-center">
+      
+      {/* 2. Main App Panel: Modified to take full edge-to-edge space fluidly */}
+      <section className="flex w-full h-full flex-row overflow-hidden bg-[#f5f7fb]">
         
+        {/* 3. The Scalable Sidebar Panel Wrapper */}
+        <div 
+          style={{ width: `${sidebarWidth}px` }} 
+          className="hidden lg:block h-full flex-shrink-0 overflow-y-auto bg-white border-r border-slate-200"
+        >
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        </div>
 
-        {/* Main Content */}
+        {/* 4. Draggable Split-Bar Resizer Handle */}
+        <div
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          className={`hidden lg:block w-1.5 h-full cursor-col-resize flex-shrink-0 transition-colors duration-200 ${
+            isDragging ? "bg-blue-500" : "bg-slate-200 hover:bg-blue-400"
+          }`}
+        />
+
+        {/* Main Content Area */}
         <section className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
           <TopBar
             cityName={selectedCity?.name}
@@ -60,7 +109,8 @@ function App() {
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
-          <div className="flex-1 p-6 pb-10 lg:p-8 lg:pb-10 bg-[#f5f7fb]">
+          {/* Added 'overflow-y-auto' below so only the data view scrolls, keeping headers fixed */}
+          <div className="flex-1 p-6 pb-10 lg:p-8 lg:pb-10 bg-[#f5f7fb] overflow-y-auto">
             {isLoading && (
               <div className="text-center font-semibold text-slate-400 py-20">
                 Fetching the latest weather...
@@ -84,7 +134,7 @@ function App() {
                 ) : (
                   <div className="flex flex-col gap-6 mx-auto max-w-6xl">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                      <div className="lg:col-span-7  flex flex-col gap-6">
+                      <div className="lg:col-span-7 flex flex-col gap-6">
                         <CurrentWeather data={weatherData.current} unit={unit} />
                         <ForecastCard data={weatherData.daily} unit={unit} onOpenOutlook={() => setShowOutlook(true)} />
                       </div>
